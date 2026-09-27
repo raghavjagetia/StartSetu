@@ -29,7 +29,6 @@ services:
   - name: startsetu-frontend
     type: web
     runtime: static
-    plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
@@ -38,5 +37,5 @@ services:
         value: https://startsetu-backend.onrender.com
     routes:
       - type: rewrite
-        path: /*
+        source: /*
         destination: /index.html
