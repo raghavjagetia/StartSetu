@@ -9,6 +9,7 @@ from .config import settings
 from .database import Base, SessionLocal, engine
 from .routers import admin, applications, auth, challenges, pilots, profiles
 from .seed import seed_admin, seed_templates
+from .seed_demo import seed_demo_data
 
 app = FastAPI(title=settings.app_name, version="1.0.0")
 
@@ -38,6 +39,7 @@ def on_startup():
     try:
         seed_admin(db)
         seed_templates(db)
+        seed_demo_data(db)
     finally:
         db.close()
 
