@@ -1,0 +1,42 @@
+databases:
+  - name: startsetu-db
+    plan: free
+    databaseName: startsetu
+    user: startsetu
+
+services:
+  - name: startsetu-backend
+    type: web
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: startsetu-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_ORIGINS
+        value: https://startsetu-frontend.onrender.com
+      - key: ADMIN_EMAIL
+        value: admin@startsetu.gov.in
+      - key: ADMIN_PASSWORD
+        generateValue: true
+
+  - name: startsetu-frontend
+    type: web
+    runtime: static
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://startsetu-backend.onrender.com
+    routes:
+      - type: rewrite
+        path: /*
+        destination: /index.html
